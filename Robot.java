@@ -32,7 +32,8 @@ public class Robot extends TimedRobot {
   private static final String kCenterCoral = "Center and Coral";
   private static final String kJustDrive = "Just Drive";
   private static final String kLeftAuto = "Left Auton";
-  private String m_autoSelected;
+  private static final string kRightAuto = "Right Auton";
+  private static final string m_autoSelected = kCenterCoral;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private final SparkMax rollerMotor = new SparkMax(5, MotorType.kBrushed);
@@ -66,6 +67,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("Center and Coral", kCenterCoral);
     m_chooser.addOption("Just Drive", kJustDrive);
     m_chooser.addOption("Left Auto", kLeftAuto);
+    m_chooser.addOption("Right Auto", kRightAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     
     driveConfig.smartCurrentLimit(60);
@@ -145,21 +147,57 @@ public class Robot extends TimedRobot {
           rollerMotor.set(0);
         } 
         case kJustDrive:
-        if (timer1.get() < 1.2) {
+        if (timer1.get() < 2.5) {
           myDrive.tankDrive(.5, .5);
           break;
           
         }
         case kLeftAuto:
-        if (timer1.get () <1.2) {
-        
-          
+        if (timer1.get () > 1) {//This is drive to position
+          myDrive.tankDrive(.4, .4); 
+        }
+        else if (timer1.get() < 1){
+          myDrive.tankDrive(0, 0);
+        }
+        else if (timer1.get() < 1){
+          myDrive.leftLeader(1).leftFollower(1); //This should hopefully rotate the bot
+        }
+        else if (timer1.get() < 1.3){
+          myDrive.leftLeader(0).leftFollower(0);
+        }
+        else if (timer1.get() < 1.3){ //bring bot to the reef
+          myDrive.tankDrive(1);
+        }
+        else if (timer1.get() < 1.35){ //stops bot and ejects coral
+          myDrive.tankDrive(0);
+          rollerMotor.set(ROLLER_EJECT_VALUE);
+        }
+        else if (timer.get() < 1.37){ //moves bot to coral station
+          rollerMoter.set(0);
+          myDrive.tankDrive(-1);
+        }
+        else if (timer.get() < 1.42){ //bot stops and waits for human player
+          myDrive.tankdrive(0);
+        }
+        else if (timer.get() < 1.48){ //drive to reef
+          mydrive.tankdrive(1);
+        }
+        else if (timer.get() < 1.55)[ //eject second coral
+          myDrive.tankdrive(0)
+          rollerMotor.set(.5)
+        ]
+        else (timer.get() <2.5){ //bot shuts down until teleop
+          rollerMotor.set(0)
         }
         case kDefaultAuto:
       
         break;
+
+      }
       }
     }
+  case kRightAuto:
+  if (timer1.get() )
 
   /** This function is called once when teleop is enabled. */
   @Override
